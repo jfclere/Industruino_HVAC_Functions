@@ -1,6 +1,7 @@
 // Libraries
 #include <SPI.h>
 #include <EthernetIndustruino.h>
+#include <DIS.h>
 #define W5500_ETHERNET_SHIELD
 
 // Defines
@@ -31,6 +32,7 @@ String    session;
 EthernetClient client; //Ethernet client mode
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 IPAddress ip(192, 168, 1, 21);
+static UC1701 lcd;
 
 // Setup
 void setup() 
@@ -62,6 +64,11 @@ void setup()
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
+
+  // clear LCD and write IP.
+  lcd.begin();
+  lcd.clear();
+  lcd.setCursor(0, 1); lcd.print(Ethernet.localIP());
   Serial.println("starting..");
  
 }
@@ -133,7 +140,7 @@ void loop()
     client.println( counter );
     client.println();
     client.print( body );
-    client.write( (ZEROBYTE);
+    client.write( ZEROBYTE);
     
     state = SENDING;
     Serial.println( "Sending message..." );
@@ -143,7 +150,7 @@ void loop()
     client.println( "DISCONNECT" );
     client.print( "receipt:disconnect-" );
     client.println( body );
-    client.write( (ZEROBYTE);
+    client.write( ZEROBYTE);
     
     state = DISCONNECTING;
     Serial.println( "Disconnecting..." );
