@@ -10,7 +10,8 @@
 #define LOGIN    " "
 #define PASSCODE " "
 #define PORT     61613
-#define TOPIC    "/topic/heart"
+#define TOPIC    "/topic/PITopic"
+#define QUEUE    "/queue/Industruino"
 #define ZEROBYTE (uint8_t)0x00
 
 // Constants for STOMP
@@ -76,7 +77,7 @@ void setup()
 // Loop
 void loop() 
 {
-  int    start;
+  // int    start;
   String body;
   String frame;
   String response;
@@ -118,17 +119,17 @@ void loop()
     client.print( "id:" );
     client.println( session );
     client.print( "destination:" );
-    client.println( TOPIC );
+    client.println( QUEUE );
     client.println( "receipt:subscribed" );
     client.println();
     client.write( ZEROBYTE);
     
-    // Subscribing to topic
-    Serial.println( "Subscribing to topic..." );
+    // Subscribing to queue
+    Serial.println( "Subscribing to queue..." );
     state = SUBSCRIBING;   
   } else if( state == SUBSCRIBED ) {
     counter = counter + 1;
-    body = String( counter );    
+    body = "{\"deviceID\": \"Industruino\", \"text\": \"Hello\"}";
     
     client.println( "SEND" );
     client.print( "destination:" );
@@ -150,9 +151,11 @@ void loop()
     client.println( "DISCONNECT" );
     client.print( "receipt:disconnect-" );
     client.println( body );
+    client.println();
     client.write( ZEROBYTE);
     
     state = DISCONNECTING;
+    lcd.setCursor(0, 7); lcd.clearLine(); lcd.print("Disconnecting..." );
     Serial.println( "Disconnecting..." );
   }
   
@@ -166,10 +169,12 @@ void loop()
     Serial.println( ") ***" );
     Serial.println( response );
     Serial.println( "*** Response End ***" );
+    lcd.setCursor(0, 5); lcd.clearLine(); lcd.print("Received: "); lcd.print(response.length());
     
     if( response.length() > 0 )
     {
       frame = getValue( response, 0, "\n" );
+      lcd.setCursor(0, 6); lcd.clearLine(); lcd.print(frame);
       
       if( frame == "CONNECTED" )
       {
@@ -191,16 +196,19 @@ void loop()
         {
           state = SUBSCRIBED;
           Serial.println( "Subscribed." );
+          lcd.setCursor(0, 7); lcd.clearLine(); lcd.print("Subscribed...");
         } else if( state == SENDING ) {
           state = SENT;
           Serial.println( "Sent." );  
           
+          lcd.setCursor(0, 7); lcd.clearLine(); lcd.print("Sent...");
           delay( 1000 );
         } else if( state == DISCONNECTING ) {
           Serial.println( "Disconnected." );
           
           client.stop();
           Serial.println( "Connection closed." );
+          lcd.setCursor(0, 7); lcd.clearLine(); lcd.print("DONE");
           state = STOP;  
         }
       }
