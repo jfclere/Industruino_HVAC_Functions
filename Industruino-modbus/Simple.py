@@ -7,9 +7,12 @@ instrument.serial.stopbits = 2
 instrument.serial.timeout  = 5
 
 ## Read temperature (PV = ProcessValue) ##
-temperature = instrument.read_register(1, 1) # Registernumber, number of decimals
+temperature = instrument.read_register(0, 2) # Registernumber, number of decimals
+print temperature
+
+temperature = instrument.read_register(1, 2) # Registernumber, number of decimals
 print temperature
 
 ## Change temperature setpoint (SP) ##
-NEW_TEMPERATURE = 95
-instrument.write_register(7, NEW_TEMPERATURE, 1) # Registernumber, value, number of decimals for storage
+#NEW_TEMPERATURE = 95
+#instrument.write_register(7, NEW_TEMPERATURE, 1) # Registernumber, value, number of decimals for storage
