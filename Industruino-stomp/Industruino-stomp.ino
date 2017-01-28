@@ -29,6 +29,7 @@ const int STOP = 9;
 // Global
 int       counter;
 int       state;
+int       loopcount = 0;
 String    session;
 EthernetClient client; //Ethernet client mode
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -81,7 +82,9 @@ void loop()
   String body;
   String frame;
   String response;
-  
+ 
+  loopcount++; 
+  lcd.setCursor(0, 4); lcd.print(loopcount);
   // If disconnected
   if( state == DISCONNECTED )
   {
