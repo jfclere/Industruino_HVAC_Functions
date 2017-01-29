@@ -52,8 +52,12 @@ void setup()
   Indio.digitalMode(4,INPUT);
   Indio.digitalMode(5,INPUT);
   Indio.digitalMode(6,INPUT);
-  Indio.digitalMode(7,INPUT);
-  Indio.digitalMode(8,INPUT);
+
+  Indio.digitalMode(7,OUTPUT);
+  Indio.digitalWrite(7,LOW);
+
+  Indio.digitalMode(8,OUTPUT);
+  Indio.digitalWrite(8,LOW);
   
   Serial.println("Started...");
  
@@ -72,9 +76,18 @@ void loop()
   holdingRegs[0] = int(EA1_TBX_BASS*100); 
   holdingRegs[1] = int(EA2_THX_HAUT*100); 
   modbus_update();
-  //for (int i=0; i<HOLDING_REGS_SIZE; i++) {
-  //    Serial.print( "received: "); Serial.print(i);Serial.print(" "); Serial.print(holdingRegs[i]);Serial.println("...");
-  //}
+
+  // start/stop the channel if required.
+  if (holdingRegs[3]) {
+    Indio.digitalWrite(7,HIGH);
+  } else {
+    Indio.digitalWrite(7,LOW);
+  }
+  if (holdingRegs[4]) {
+    Indio.digitalWrite(8,HIGH);
+  } else {
+    Indio.digitalWrite(8,LOW);
+  }
 }
 
 // Sondes CTN Type III Precon
